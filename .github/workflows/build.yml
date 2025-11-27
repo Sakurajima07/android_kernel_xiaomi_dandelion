@@ -58,8 +58,8 @@ jobs:
           sudo ln -sf /usr/bin/ld.lld /usr/bin/ld || true
           sudo ln -sf "/usr/bin/python2" /usr/bin/python
           git clone --depth=1 https://github.com/dandelion64-Archives/clang-r353983c clang
-          git clone --depth=1 https://github.com/Sakurajima07/aarch64-linux-android-4.9 gcc64
-          git clone --depth=1 https://github.com/Sakurajima07/arm-linux-androideabi-4.9 gcc
+          #git clone --depth=1 https://github.com/Sakurajima07/aarch64-linux-android-4.9 gcc64
+          #git clone --depth=1 https://github.com/Sakurajima07/arm-linux-androideabi-4.9 gcc
 
 
       - name: Build the kernel and log output
@@ -71,20 +71,23 @@ jobs:
             echo "### Kernel Build Started: $(date)"
             export ARCH=arm64
             export SUBARCH=arm64
+            export CLANG_TRIPLE="aarch64-linux-gnu-"
+            export CROSS_COMPILE="aarch64-linux-gnu-"
+            export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
             export CLANG_PATH="$PWD/clang/bin"
-            export GCC32_PATH="$PWD/gcc/bin"
-            export GCC64_PATH="$PWD/gcc64/bin"
-            export PATH="$CLANG_PATH:$GCC64_PATH:$GCC32_PATH:$PATH"
-            export CROSS_COMPILE=aarch64-linux-android-
-            export CROSS_COMPILE_ARM32=arm-linux-androideabi-
+            #export GCC32_PATH="$PWD/gcc/bin"
+            #export GCC64_PATH="$PWD/gcc64/bin"
+            export PATH="$CLANG_PATH:$PATH"
+            #export CROSS_COMPILE=aarch64-linux-android-
+            #export CROSS_COMPILE_ARM32=arm-linux-androideabi-
             export CC=clang
             export HOSTCC=clang
             export HOSTCXX=clang++
-            aarch64-linux-android-gcc --version
-            arm-linux-androideabi-gcc --version
+            #aarch64-linux-android-gcc --version
+            #arm-linux-androideabi-gcc --version
             clang --version
             make O=out ${DEFCONFIG}_defconfig
-            make -j$(nproc --all) O=out
+            make -j$(nproc --all) CC=clang LD=ld.lld NM=llvm-nm AR=llvm-ar STRIP=llvm-strip OBJCOPY=llvm-objcopy O=out
           } 2>&1 | tee build.log
 
           END=$(date +%s)
