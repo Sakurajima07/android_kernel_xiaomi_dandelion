@@ -71,9 +71,6 @@ jobs:
             echo "### Kernel Build Started: $(date)"
             export ARCH=arm64
             export SUBARCH=arm64
-            export CLANG_TRIPLE="aarch64-linux-gnu-"
-            export CROSS_COMPILE="aarch64-linux-gnu-"
-            export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
             export CLANG_PATH="$PWD/clang/bin"
             #export GCC32_PATH="$PWD/gcc/bin"
             #export GCC64_PATH="$PWD/gcc64/bin"
